@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>화성시남부신문고 - 노인복지관 간편 안전신문고</title>
+  <title>화성시남부신문고 - 노인복지관 스마트 안전신문고</title>
+  
+  <!-- Supabase JS Client (v2 CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <!-- Google Fonts: Nunito & Noto Sans KR -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +15,7 @@
 
   <style>
     /* ========================================================
-       DESIGN TOKENS (from DESIGN.md - Duolingo Playful Style)
+       DESIGN TOKENS (Duolingo Style System)
        ======================================================== */
     :root {
       --color-eager-green: #58cc02;
@@ -61,7 +65,7 @@
       flex-direction: column;
     }
 
-    /* 3D Sticker Buttons & Elements (Duolingo signature) */
+    /* 3D Sticker Buttons */
     .btn-3d {
       position: relative;
       display: inline-flex;
@@ -70,7 +74,7 @@
       gap: 8px;
       font-weight: 700;
       font-size: 16px;
-      padding: 14px 22px;
+      padding: 13px 20px;
       border-radius: var(--radius-lg);
       border: 2px solid transparent;
       cursor: pointer;
@@ -89,24 +93,16 @@
       color: var(--color-paper-white);
       border-bottom: 4px solid var(--color-eager-green-dark);
     }
-    .btn-green:hover {
-      background-color: #52bf02;
-    }
-    .btn-green:active {
-      border-bottom-width: 1px;
-    }
+    .btn-green:hover { background-color: #52bf02; }
+    .btn-green:active { border-bottom-width: 1px; }
 
     .btn-blue {
       background-color: var(--color-spark-blue);
       color: var(--color-paper-white);
       border-bottom: 4px solid var(--color-spark-blue-dark);
     }
-    .btn-blue:hover {
-      background-color: #1a9ee0;
-    }
-    .btn-blue:active {
-      border-bottom-width: 1px;
-    }
+    .btn-blue:hover { background-color: #1a9ee0; }
+    .btn-blue:active { border-bottom-width: 1px; }
 
     .btn-white-outline {
       background-color: var(--color-paper-white);
@@ -118,9 +114,7 @@
       background-color: #fcfcfc;
       color: var(--color-charcoal);
     }
-    .btn-white-outline:active {
-      border-bottom-width: 2px;
-    }
+    .btn-white-outline:active { border-bottom-width: 2px; }
 
     .btn-danger-outline {
       background-color: var(--color-paper-white);
@@ -128,9 +122,7 @@
       border: 2px solid #ffd0d0;
       border-bottom: 4px solid #f8b4b4;
     }
-    .btn-danger-outline:hover {
-      background-color: #fff5f5;
-    }
+    .btn-danger-outline:hover { background-color: #fff5f5; }
 
     /* Chunky Card Style */
     .duo-card {
@@ -142,7 +134,7 @@
       margin-bottom: 20px;
     }
 
-    /* Badges / Chips */
+    /* Badges */
     .badge {
       display: inline-flex;
       align-items: center;
@@ -223,6 +215,50 @@
       color: var(--color-pencil-gray);
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Supabase Status Pill */
+    .db-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      border: 2px solid var(--color-border-subtle);
+      background: var(--color-paper-white);
+      transition: all 0.15s ease;
+    }
+    .db-status-pill.online {
+      background: #f0fdf4;
+      border-color: #86efac;
+      color: #166534;
+    }
+    .db-status-pill.local {
+      background: #fefce8;
+      border-color: #fde047;
+      color: #854d0e;
+    }
+    .db-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .db-status-pill.online .db-dot {
+      animation: blink 2s infinite ease-in-out;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
     /* Mode Switcher Tabs */
     .tab-nav {
       display: flex;
@@ -272,9 +308,7 @@
     }
 
     /* Views */
-    .view-section {
-      display: none;
-    }
+    .view-section { display: none; }
     .view-section.active {
       display: block;
       animation: fadeIn 0.2s ease-in-out;
@@ -286,10 +320,7 @@
     }
 
     /* Form Styles */
-    .form-group {
-      margin-bottom: 22px;
-    }
-
+    .form-group { margin-bottom: 22px; }
     .form-label {
       display: block;
       font-size: 15px;
@@ -297,14 +328,6 @@
       color: var(--color-charcoal);
       margin-bottom: 8px;
     }
-
-    .form-sublabel {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--color-pencil-gray);
-      margin-top: 3px;
-    }
-
     .form-control {
       width: 100%;
       padding: 14px 16px;
@@ -317,26 +340,23 @@
       color: var(--color-charcoal);
       transition: border-color 0.15s, background-color 0.15s;
     }
-
     .form-control:focus {
       background: var(--color-paper-white);
       border-color: var(--color-spark-blue);
       box-shadow: 0 0 0 3px rgba(28, 176, 246, 0.15);
     }
-
     textarea.form-control {
       resize: vertical;
       min-height: 90px;
     }
 
-    /* Quick Preset Chips */
+    /* Preset Chips */
     .preset-chips {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       margin-top: 8px;
     }
-
     .chip-btn {
       border: 2px solid var(--color-border-subtle);
       background: var(--color-paper-white);
@@ -351,26 +371,18 @@
       gap: 4px;
       transition: all 0.1s ease;
     }
-
     .chip-btn:hover {
       border-color: var(--color-spark-blue);
       color: var(--color-spark-blue);
       background: #f0f9ff;
     }
 
-    .chip-btn.selected {
-      border-color: var(--color-spark-blue);
-      background: #e0f4ff;
-      color: #0077b6;
-    }
-
-    /* Category Buttons Grid */
+    /* Category Grid */
     .category-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
       gap: 10px;
     }
-
     .category-card {
       border: 2px solid var(--color-border-subtle);
       border-radius: var(--radius-lg);
@@ -385,23 +397,17 @@
       gap: 6px;
       border-bottom: 4px solid var(--color-border-subtle);
     }
-
     .category-card:hover {
       transform: translateY(-2px);
       border-color: var(--color-fresh-leaf);
     }
-
     .category-card.selected {
       border-color: var(--color-eager-green);
       background: var(--color-storybook-green);
       border-bottom-color: var(--color-eager-green-dark);
       transform: translateY(1px);
     }
-
-    .category-icon {
-      font-size: 28px;
-    }
-
+    .category-icon { font-size: 28px; }
     .category-name {
       font-size: 13px;
       font-weight: 800;
@@ -419,12 +425,10 @@
       position: relative;
       transition: all 0.15s ease;
     }
-
     .photo-upload-box:hover {
       border-color: var(--color-spark-blue);
       background: #ebf6ff;
     }
-
     .photo-preview-wrap {
       display: none;
       position: relative;
@@ -435,14 +439,12 @@
       max-height: 280px;
       background: #000;
     }
-
     .photo-preview-wrap img {
       width: 100%;
       height: 280px;
       object-fit: cover;
       display: block;
     }
-
     .photo-delete-btn {
       position: absolute;
       top: 10px;
@@ -460,14 +462,7 @@
       justify-content: center;
     }
 
-    /* Voice Input & Helper bar */
-    .input-actions-bar {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 6px;
-    }
-
+    /* Mini Buttons */
     .btn-mini {
       border: none;
       background: #eee;
@@ -481,16 +476,12 @@
       align-items: center;
       gap: 4px;
     }
-    .btn-mini:hover {
-      background: #e2e2e2;
-      color: var(--color-charcoal);
-    }
+    .btn-mini:hover { background: #e2e2e2; color: var(--color-charcoal); }
     .btn-mini.recording {
       background: #ffe3e3;
       color: var(--color-danger-red);
       animation: pulse 1s infinite;
     }
-
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
@@ -503,7 +494,6 @@
       gap: 14px;
       margin-bottom: 24px;
     }
-
     .stat-card {
       background: var(--color-paper-white);
       border: 2px solid var(--color-border-subtle);
@@ -514,7 +504,6 @@
       align-items: center;
       gap: 12px;
     }
-
     .stat-icon {
       width: 44px;
       height: 44px;
@@ -524,7 +513,6 @@
       justify-content: center;
       font-size: 22px;
     }
-
     .stat-num {
       font-family: var(--font-family-display);
       font-size: 24px;
@@ -532,7 +520,6 @@
       line-height: 1.1;
       color: var(--color-charcoal);
     }
-
     .stat-label {
       font-size: 12px;
       font-weight: 700;
@@ -548,7 +535,6 @@
       gap: 12px;
       margin-bottom: 18px;
     }
-
     .filter-group {
       display: flex;
       align-items: center;
@@ -556,7 +542,6 @@
       overflow-x: auto;
       padding-bottom: 4px;
     }
-
     .filter-chip {
       background: var(--color-paper-white);
       border: 2px solid var(--color-border-subtle);
@@ -569,18 +554,15 @@
       white-space: nowrap;
       transition: all 0.1s;
     }
-
     .filter-chip.active {
       background: var(--color-night-ink);
       border-color: var(--color-night-ink);
       color: var(--color-paper-white);
     }
-
     .search-box {
       position: relative;
       min-width: 220px;
     }
-
     .search-input {
       width: 100%;
       padding: 8px 12px 8px 34px;
@@ -589,10 +571,7 @@
       font-size: 13px;
       outline: none;
     }
-    .search-input:focus {
-      border-color: var(--color-spark-blue);
-    }
-
+    .search-input:focus { border-color: var(--color-spark-blue); }
     .search-icon {
       position: absolute;
       left: 11px;
@@ -608,7 +587,6 @@
       flex-direction: column;
       gap: 14px;
     }
-
     .incident-item {
       background: var(--color-paper-white);
       border: 2px solid var(--color-border-subtle);
@@ -618,11 +596,7 @@
       gap: 18px;
       transition: border-color 0.15s;
     }
-
-    .incident-item:hover {
-      border-color: #cbd5e1;
-    }
-
+    .incident-item:hover { border-color: #cbd5e1; }
     .incident-thumb {
       width: 110px;
       height: 110px;
@@ -636,25 +610,21 @@
       border: 1px solid var(--color-border-subtle);
       cursor: pointer;
     }
-
     .incident-thumb img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-
     .incident-thumb-empty {
       color: #94a3b8;
       font-size: 32px;
     }
-
     .incident-content {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
-
     .incident-header {
       display: flex;
       align-items: flex-start;
@@ -662,14 +632,12 @@
       gap: 12px;
       margin-bottom: 6px;
     }
-
     .incident-id {
       font-family: var(--font-family-display);
       font-size: 13px;
       font-weight: 800;
       color: var(--color-pencil-gray);
     }
-
     .incident-location {
       font-size: 17px;
       font-weight: 800;
@@ -679,7 +647,6 @@
       align-items: center;
       gap: 6px;
     }
-
     .incident-desc {
       font-size: 14px;
       color: #4b5563;
@@ -689,7 +656,6 @@
       padding: 8px 12px;
       border-radius: var(--radius-sm);
     }
-
     .incident-action-box {
       margin-top: 8px;
       padding: 8px 12px;
@@ -699,7 +665,6 @@
       font-size: 13px;
       color: #276700;
     }
-
     .incident-footer {
       display: flex;
       align-items: center;
@@ -710,20 +675,17 @@
       padding-top: 10px;
       border-top: 1px dashed var(--color-border-subtle);
     }
-
     .incident-meta {
       font-size: 12px;
       color: var(--color-pencil-gray);
       display: flex;
       gap: 12px;
     }
-
     .status-select-wrap {
       display: flex;
       align-items: center;
       gap: 8px;
     }
-
     .status-dropdown {
       padding: 6px 12px;
       border-radius: var(--radius-pill);
@@ -733,6 +695,36 @@
       background: var(--color-paper-white);
       cursor: pointer;
       outline: none;
+    }
+
+    /* Toast Notification (Realtime feedback) */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      background: #000437;
+      color: white;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      border: 2px solid #58cc02;
+      animation: slideUp 0.3s ease forwards;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     /* Modal dialog */
@@ -747,15 +739,11 @@
       padding: 16px;
       backdrop-filter: blur(2px);
     }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
+    .modal-backdrop.open { display: flex; }
     .modal-box {
       background: var(--color-paper-white);
       border-radius: var(--radius-xl);
-      max-width: 500px;
+      max-width: 520px;
       width: 100%;
       padding: 28px;
       box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
@@ -763,13 +751,13 @@
       text-align: center;
       animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
     }
-
     @keyframes popIn {
       from { transform: scale(0.9); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
-
     .modal-mascot {
       width: 76px;
       height: 76px;
@@ -794,9 +782,7 @@
       justify-content: center;
       padding: 20px;
     }
-    .lightbox-modal.open {
-      display: flex;
-    }
+    .lightbox-modal.open { display: flex; }
     .lightbox-modal img {
       max-width: 90vw;
       max-height: 85vh;
@@ -804,54 +790,18 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
-    /* Print styles */
-    @media print {
-      header.duo-header, .tab-nav, .filter-bar, .btn-3d, .btn-mini, .status-select-wrap button, .no-print {
-        display: none !important;
-      }
-      body {
-        background: white;
-      }
-      .app-container {
-        max-width: 100% !important;
-        padding: 0 !important;
-      }
-      .duo-card, .incident-item {
-        border: 1px solid #ccc !important;
-        box-shadow: none !important;
-        break-inside: avoid;
-      }
-      .view-section {
-        display: block !important;
-      }
-      #view-report {
-        display: none !important;
-      }
-    }
-
-    /* Responsive adjustments */
+    /* Responsive */
     @media (max-width: 640px) {
       .header-inner {
         flex-direction: column;
         gap: 12px;
         align-items: stretch;
       }
-      .brand-group {
-        justify-content: center;
-      }
-      .tab-nav {
-        justify-content: center;
-      }
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .incident-item {
-        flex-direction: column;
-      }
-      .incident-thumb {
-        width: 100%;
-        height: 160px;
-      }
+      .brand-group { justify-content: center; }
+      .header-actions { justify-content: space-between; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .incident-item { flex-direction: column; }
+      .incident-thumb { width: 100%; height: 160px; }
     }
   </style>
 </head>
@@ -868,17 +818,26 @@
         </div>
       </div>
 
-      <nav class="tab-nav">
-        <button id="tab-report" class="tab-btn active" onclick="switchView('report')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          간편 신고
+      <div class="header-actions">
+        <!-- Supabase Connection Status Pill -->
+        <button id="db-status-pill" class="db-status-pill local" onclick="openConfigModal()" title="데이터베이스 연동 설정">
+          <span class="db-dot"></span>
+          <span id="db-status-text">로컬 모드 (수파베이스 미연동)</span>
+          <span style="font-size: 11px;">⚙️</span>
         </button>
-        <button id="tab-dashboard" class="tab-btn" onclick="switchView('dashboard')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-          관리자 보드
-          <span id="pending-badge-count" class="tab-badge">0</span>
-        </button>
-      </nav>
+
+        <nav class="tab-nav">
+          <button id="tab-report" class="tab-btn active" onclick="switchView('report')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            간편 신고
+          </button>
+          <button id="tab-dashboard" class="tab-btn" onclick="switchView('dashboard')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            관리자 보드
+            <span id="pending-badge-count" class="tab-badge">0</span>
+          </button>
+        </nav>
+      </div>
     </div>
   </header>
 
@@ -1010,7 +969,7 @@
 
           <!-- 제출 버튼 (Duolingo 3D 볼록 버튼) -->
           <div style="margin-top: 28px;">
-            <button type="submit" class="btn-3d btn-green" style="width: 100%; font-size: 18px; padding: 16px;">
+            <button type="submit" id="submit-btn" class="btn-3d btn-green" style="width: 100%; font-size: 18px; padding: 16px;">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
               화성시남부신문고에 제출하기
             </button>
@@ -1025,8 +984,8 @@
           <span>💡</span> 신문고 접수 후 어떻게 처리되나요?
         </h3>
         <ul style="font-size: 13px; color: #475569; padding-left: 20px; line-height: 1.6;">
-          <li>제출 즉시 <strong>시설관리팀 관리자 보드</strong>로 전달되어 긴급도에 따라 순차 조치됩니다.</li>
-          <li>조치 상태는 <span style="color:#b36b00; font-weight:700;">접수</span> ➔ <span style="color:#0b7eb5; font-weight:700;">조치중</span> ➔ <span style="color:#2e7a00; font-weight:700;">조치완료</span> 로 업데이트됩니다.</li>
+          <li>제출 즉시 <strong>수파베이스(Supabase) 클라우드</strong>를 통해 시설관리자 화면에 실시간 전달됩니다.</li>
+          <li>조치 상태는 <span style="color:#b36b00; font-weight:700;">접수</span> ➔ <span style="color:#0b7eb5; font-weight:700;">조치중</span> ➔ <span style="color:#2e7a00; font-weight:700;">조치완료</span> 로 실시간 업데이트됩니다.</li>
           <li>긴급 누수, 화재, 비상 상황은 즉시 시설관리실(구내 104)로 유선 연락 바랍니다.</li>
         </ul>
       </div>
@@ -1049,19 +1008,19 @@
         </div>
 
         <div style="display: flex; gap: 8px;" class="no-print">
+          <button class="btn-3d btn-white-outline" style="padding: 8px 14px; font-size: 13px;" onclick="refreshData()" title="데이터 새로고침">
+            🔄 새로고침
+          </button>
           <button class="btn-3d btn-white-outline" style="padding: 8px 14px; font-size: 13px;" onclick="exportToCSV()" title="엑셀 CSV 다운로드">
             📥 엑셀(CSV) 저장
           </button>
           <button class="btn-3d btn-white-outline" style="padding: 8px 14px; font-size: 13px;" onclick="window.print()" title="안전 점검일지 인쇄">
             🖨️ 점검표 인쇄
           </button>
-          <button class="btn-3d btn-white-outline" style="padding: 8px 14px; font-size: 13px;" onclick="resetToSampleData()" title="기본 샘플 복구">
-            🔄 샘플 복구
-          </button>
         </div>
       </div>
 
-      <!-- 통계 카드 그리드 (Duolingo Style) -->
+      <!-- 통계 카드 그리드 -->
       <div class="stats-grid">
         <div class="stat-card" style="border-bottom-color: #cbd5e1;">
           <div class="stat-icon" style="background: #f1f5f9; color: #475569;">📊</div>
@@ -1203,18 +1162,86 @@
   </div>
 
   <!-- ==========================================
-       MODAL 3: 사진 확대 팝업 (Lightbox)
+       MODAL 3: 수파베이스(Supabase) 연동 설정 모달
+       ========================================== -->
+  <div id="config-modal" class="modal-backdrop">
+    <div class="modal-box" style="text-align: left; max-width: 560px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 2px solid #eee; padding-bottom: 12px;">
+        <h3 style="font-size: 18px; font-weight: 900; color: var(--color-charcoal); display: flex; align-items: center; gap: 6px;">
+          <span>⚡</span> 수파베이스(Supabase) 연동 설정
+        </h3>
+        <button type="button" onclick="closeConfigModal()" style="border: none; background: transparent; font-size: 20px; cursor: pointer; color: #999;">✕</button>
+      </div>
+
+      <p style="font-size: 13px; color: var(--color-pencil-gray); margin-bottom: 18px; line-height: 1.5;">
+        Supabase 대시보드 (<strong>Project Settings &gt; API</strong>)의 정보를 입력하면 모든 직원의 스마트폰과 관리자 컴퓨터가 실시간으로 동기화됩니다.
+      </p>
+
+      <div class="form-group">
+        <label class="form-label" for="cfg-supabase-url">
+          Project URL (API URL)
+        </label>
+        <input type="url" id="cfg-supabase-url" class="form-control" placeholder="https://your-project-id.supabase.co">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="cfg-supabase-key">
+          Anon / Public API Key
+        </label>
+        <input type="text" id="cfg-supabase-key" class="form-control" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+      </div>
+
+      <div style="background: #f1f8ed; border-radius: var(--radius-md); padding: 12px; margin-bottom: 18px; border: 1.5px solid #b8f08a;">
+        <div style="font-size: 12px; font-weight: 800; color: #276700; margin-bottom: 4px;">📌 1분 SQL 설정 안내</div>
+        <p style="font-size: 12px; color: #375225; line-height: 1.4;">
+          테이블이 아직 없다면 폴더 내 <code>supabase_schema.sql</code> 파일을 Supabase 대시보드의 <strong>SQL Editor</strong>에 붙여넣고 실행(Run)해주세요.
+        </p>
+        <button type="button" class="btn-mini" style="margin-top: 8px; background: white; border: 1px solid #b8f08a; color: #276700;" onclick="copySqlSchema()">
+          📋 SQL 스크립트 클립보드 복사
+        </button>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 24px;">
+        <button type="button" class="btn-3d btn-danger-outline" style="padding: 10px 14px; font-size: 13px;" onclick="resetToLocalMode()">
+          로컬 모드로 전환
+        </button>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn-3d btn-white-outline" style="padding: 10px 16px;" onclick="closeConfigModal()">닫기</button>
+          <button type="button" class="btn-3d btn-green" style="padding: 10px 20px;" onclick="saveSupabaseConfig()">연결 및 저장</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 4: 사진 확대 팝업 (Lightbox)
        ========================================== -->
   <div id="lightbox-modal" class="lightbox-modal" onclick="closeLightbox()">
     <img id="lightbox-img" src="" alt="사진 원본 보기">
   </div>
 
+  <!-- Realtime Toast Notifications Container -->
+  <div id="toast-container" class="toast-container"></div>
+
   <!-- ==========================================
-       JAVASCRIPT LOGIC
+       JAVASCRIPT LOGIC & SUPABASE INTEGRATION
        ========================================== -->
   <script>
-    // Storage Key
-    const STORAGE_KEY = 'hwaseong_south_safe_incidents_v1';
+    // ==========================================
+    // 1. SUPABASE CONFIGURATION
+    // ==========================================
+    // 기본 연결 정보 (화성시남부신문고 Supabase 클라우드)
+    const DEFAULT_CONFIG = {
+      url: 'https://rnqbjtebmptidpcgqmkx.supabase.co',
+      anonKey: 'sb_publishable_KekrE1L5ZJiqAinwa5ASZQ_s5QfF_8q'
+    };
+
+    const CFG_STORAGE_KEY = 'hwaseong_south_supabase_config_v1';
+    const LOCAL_DATA_KEY = 'hwaseong_south_safe_incidents_v1';
+
+    let supabaseClient = null;
+    let isSupabaseConnected = false;
+    let realtimeChannel = null;
 
     // State
     let incidents = [];
@@ -1224,89 +1251,214 @@
     let speechRecognition = null;
     let isRecordingVoice = false;
 
-    // Default Sample Data (화성시남부노인복지관 맞춤 현실적 데이터)
+    // Sample fallback data
     const SAMPLE_INCIDENTS = [
       {
-        id: 'HS-2026-0929-01',
+        id: 'HS-2026-1008-01',
         location: '본관 2층 프로그램실 203호 복도 앞',
         category: '낙상/바닥 미끄럼',
         description: '복도 바닥 미끄럼 방지 매트 모서리가 살짝 들떠 있어서 보행차를 미시는 어르신들이 걸려 넘어지실 위험이 있습니다.',
         reporter: '평생교육팀 이복지',
-        createdAt: '2026-09-29T10:15:00',
+        createdAt: '2026-10-08T10:15:00',
         status: 'pending',
         actionNote: '',
         actionDate: null,
         photo: null
       },
       {
-        id: 'HS-2026-0929-02',
+        id: 'HS-2026-1008-02',
         location: '지하 1층 경로식당 퇴식구 주변',
         category: '낙상/바닥 미끄럼',
         description: '식사 배식 후 식기 반납대 바닥에 물기가 고여 미끄럽습니다. 조치 및 안내 표지판 설치 부탁드립니다.',
         reporter: '영양위생팀 박조리',
-        createdAt: '2026-09-29T13:40:00',
+        createdAt: '2026-10-08T13:40:00',
         status: 'in_progress',
         actionNote: '현장 미끄럼주의 안전표지판 2개 배치 완료, 수시 건식 걸레질 진행 중',
-        actionDate: '2026-09-29T14:00:00',
+        actionDate: '2026-10-08T14:00:00',
         photo: null
       },
       {
-        id: 'HS-2026-0928-03',
+        id: 'HS-2026-1007-03',
         location: '1층 어르신 전용 남성 화장실 세면대',
         category: '시설/비품 파손',
         description: '세면대 온수 수전 레버가 헐거워져 헛돌고 물이 조금씩 샙니다.',
         reporter: '안내데스크 최직원',
-        createdAt: '2026-09-28T16:20:00',
+        createdAt: '2026-10-07T16:20:00',
         status: 'completed',
         actionNote: '수전 카트리지 및 패킹 교체 수리 완료. 정상 작동 확인.',
-        actionDate: '2026-09-29T09:30:00',
+        actionDate: '2026-10-08T09:30:00',
         photo: null
       }
     ];
 
     // ==========================================
-    // Lifecycle & Initialization
+    // 2. INITIALIZATION
     // ==========================================
-    window.addEventListener('DOMContentLoaded', () => {
-      loadIncidents();
+    window.addEventListener('DOMContentLoaded', async () => {
       initSpeechRecognition();
-      renderDashboard();
+      await initSupabase();
+      await refreshData();
     });
 
-    function loadIncidents() {
-      const stored = localStorage.getItem(STORAGE_KEY);
+    // Supabase Client Init
+    async function initSupabase() {
+      const storedCfg = localStorage.getItem(CFG_STORAGE_KEY);
+      let cfg = DEFAULT_CONFIG;
+      if (storedCfg) {
+        try {
+          const parsed = JSON.parse(storedCfg);
+          if (parsed && parsed.url && parsed.anonKey) {
+            cfg = parsed;
+          }
+        } catch (e) {}
+      }
+
+      if (cfg.url && cfg.anonKey && window.supabase) {
+        try {
+          supabaseClient = window.supabase.createClient(cfg.url, cfg.anonKey);
+          
+          // Test query
+          const { data, error } = await supabaseClient.from('incidents').select('id').limit(1);
+          if (error) throw error;
+
+          isSupabaseConnected = true;
+          updateDbStatusUI(true);
+          setupRealtimeSubscription();
+          console.log('✅ Supabase connected successfully!');
+          return;
+        } catch (err) {
+          console.warn('⚠️ Supabase connection failed, falling back to LocalStorage:', err.message);
+          isSupabaseConnected = false;
+        }
+      } else {
+        isSupabaseConnected = false;
+      }
+
+      updateDbStatusUI(false);
+    }
+
+    function updateDbStatusUI(online) {
+      const pill = document.getElementById('db-status-pill');
+      const text = document.getElementById('db-status-text');
+
+      if (online) {
+        pill.className = 'db-status-pill online';
+        text.textContent = '수파베이스 실시간 연동됨';
+      } else {
+        pill.className = 'db-status-pill local';
+        text.textContent = '로컬 모드 (수파베이스 설정)';
+      }
+    }
+
+    // Realtime Postgres Changes
+    function setupRealtimeSubscription() {
+      if (!supabaseClient || !isSupabaseConnected) return;
+
+      if (realtimeChannel) {
+        supabaseClient.removeChannel(realtimeChannel);
+      }
+
+      realtimeChannel = supabaseClient
+        .channel('public:incidents')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'incidents' }, (payload) => {
+          console.log('⚡ Realtime update received:', payload);
+          if (payload.eventType === 'INSERT') {
+            showToast('📢 새로운 안전 신고가 실시간으로 접수되었습니다!');
+          } else if (payload.eventType === 'UPDATE') {
+            showToast('🔄 조치 상태가 실시간으로 업데이트되었습니다.');
+          }
+          refreshData(false); // silent refresh
+        })
+        .subscribe();
+    }
+
+    // Toast Notification
+    function showToast(msg) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<span>🔔</span> <span>${escapeHtml(msg)}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.5s';
+        setTimeout(() => toast.remove(), 500);
+      }, 4000);
+    }
+
+    // ==========================================
+    // 3. DATA LAYER (SUPABASE + LOCAL FALLBACK)
+    // ==========================================
+    async function refreshData(showLoading = true) {
+      if (isSupabaseConnected && supabaseClient) {
+        try {
+          const { data, error } = await supabaseClient
+            .from('incidents')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+          if (error) throw error;
+
+          incidents = (data || []).map(fromDbIncident);
+          localStorage.setItem(LOCAL_DATA_KEY, JSON.stringify(incidents));
+        } catch (err) {
+          console.error('Failed to fetch from Supabase:', err);
+          loadFromLocal();
+        }
+      } else {
+        loadFromLocal();
+      }
+
+      renderDashboard();
+    }
+
+    function loadFromLocal() {
+      const stored = localStorage.getItem(LOCAL_DATA_KEY);
       if (stored) {
         try {
           incidents = JSON.parse(stored);
         } catch (e) {
-          console.error('Failed to parse stored incidents', e);
           incidents = [...SAMPLE_INCIDENTS];
         }
       } else {
         incidents = [...SAMPLE_INCIDENTS];
-        saveIncidents();
+        localStorage.setItem(LOCAL_DATA_KEY, JSON.stringify(incidents));
       }
     }
 
-    function saveIncidents() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(incidents));
-      } catch (e) {
-        alert('브라우저 용량이 초과되어 저장하지 못했습니다. 불필요한 사진을 정리해주세요.');
-      }
+    // DB snake_case <-> App camelCase Mappers
+    function toDbIncident(appItem) {
+      return {
+        id: appItem.id,
+        location: appItem.location,
+        category: appItem.category,
+        description: appItem.description,
+        reporter: appItem.reporter,
+        status: appItem.status,
+        action_note: appItem.actionNote,
+        action_date: appItem.actionDate,
+        photo: appItem.photo,
+        created_at: appItem.createdAt
+      };
     }
 
-    function resetToSampleData() {
-      if (confirm('샘플 데이터 3건으로 초기화하시겠습니까? (기존 데이터가 대체됩니다)')) {
-        incidents = JSON.parse(JSON.stringify(SAMPLE_INCIDENTS));
-        saveIncidents();
-        renderDashboard();
-        alert('샘플 데이터가 복구되었습니다.');
-      }
+    function fromDbIncident(dbItem) {
+      return {
+        id: dbItem.id,
+        location: dbItem.location,
+        category: dbItem.category,
+        description: dbItem.description,
+        reporter: dbItem.reporter || '복지관 직원',
+        status: dbItem.status || 'pending',
+        actionNote: dbItem.action_note || '',
+        actionDate: dbItem.action_date,
+        photo: dbItem.photo,
+        createdAt: dbItem.created_at
+      };
     }
 
     // ==========================================
-    // View Switcher (Report vs Dashboard)
+    // 4. VIEW & FORM HANDLERS
     // ==========================================
     function switchView(viewName) {
       const reportView = document.getElementById('view-report');
@@ -1330,9 +1482,6 @@
       }
     }
 
-    // ==========================================
-    // Report Form Handlers
-    // ==========================================
     function setPresetLocation(loc) {
       const input = document.getElementById('report-location');
       input.value = loc;
@@ -1354,7 +1503,6 @@
       reader.onload = (event) => {
         const img = new Image();
         img.onload = () => {
-          // Resize image for optimal localStorage storage (Max width/height: 800px)
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
@@ -1378,8 +1526,6 @@
           ctx.drawImage(img, 0, 0, width, height);
 
           currentPhotoBase64 = canvas.toDataURL('image/jpeg', 0.75);
-
-          // Update Preview
           document.getElementById('photo-preview-img').src = currentPhotoBase64;
           document.getElementById('photo-preview-wrap').style.display = 'block';
         };
@@ -1448,7 +1594,7 @@
     }
 
     // Form Submit
-    function handleFormSubmit(e) {
+    async function handleFormSubmit(e) {
       e.preventDefault();
 
       const location = document.getElementById('report-location').value.trim();
@@ -1462,7 +1608,11 @@
         return;
       }
 
-      // Generate ID: HS-YYYYMMDD-XX
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.6';
+
+      // Generate ID: HS-YYYYMMDD-XXXX
       const now = new Date();
       const datePart = now.getFullYear().toString() +
                        String(now.getMonth() + 1).padStart(2, '0') +
@@ -1483,18 +1633,34 @@
         photo: currentPhotoBase64
       };
 
-      // Add to front of array
-      incidents.unshift(newIncident);
-      saveIncidents();
+      try {
+        if (isSupabaseConnected && supabaseClient) {
+          const { error } = await supabaseClient
+            .from('incidents')
+            .insert([toDbIncident(newIncident)]);
 
-      // Reset form
-      document.getElementById('incident-form').reset();
-      clearPhoto();
-      selectCategory('낙상/바닥 미끄럼', document.querySelector('.category-card'));
+          if (error) throw error;
+        }
 
-      // Show Success Modal
-      document.getElementById('modal-incident-id').textContent = newId;
-      document.getElementById('success-modal').classList.add('open');
+        // Local array cache sync
+        incidents.unshift(newIncident);
+        localStorage.setItem(LOCAL_DATA_KEY, JSON.stringify(incidents));
+
+        // Reset Form
+        document.getElementById('incident-form').reset();
+        clearPhoto();
+        selectCategory('낙상/바닥 미끄럼', document.querySelector('.category-card'));
+
+        // Show Modal
+        document.getElementById('modal-incident-id').textContent = newId;
+        document.getElementById('success-modal').classList.add('open');
+      } catch (err) {
+        console.error('Submit error:', err);
+        alert('접수 저장 중 문제가 발생했습니다: ' + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+      }
     }
 
     function closeModal() {
@@ -1507,29 +1673,25 @@
     }
 
     // ==========================================
-    // Dashboard Rendering & Actions
+    // 5. DASHBOARD & CRUD
     // ==========================================
     function renderDashboard() {
-      // Calculate Counts
       const totalCount = incidents.length;
       const pendingCount = incidents.filter(i => i.status === 'pending').length;
       const inProgressCount = incidents.filter(i => i.status === 'in_progress').length;
       const completedCount = incidents.filter(i => i.status === 'completed').length;
 
-      // Update Header Badge & Stat Cards
       document.getElementById('pending-badge-count').textContent = pendingCount;
       document.getElementById('stat-total').textContent = totalCount;
       document.getElementById('stat-pending').textContent = pendingCount;
       document.getElementById('stat-in-progress').textContent = inProgressCount;
       document.getElementById('stat-completed').textContent = completedCount;
 
-      // Update Filter counts
       document.getElementById('filter-count-all').textContent = totalCount;
       document.getElementById('filter-count-pending').textContent = pendingCount;
       document.getElementById('filter-count-in-progress').textContent = inProgressCount;
       document.getElementById('filter-count-completed').textContent = completedCount;
 
-      // Filter list
       let filtered = incidents;
       if (currentFilter !== 'all') {
         filtered = filtered.filter(i => i.status === currentFilter);
@@ -1557,21 +1719,18 @@
 
       emptyState.style.display = 'none';
 
-      // Render items
       container.innerHTML = filtered.map(item => {
         const dateFormatted = formatDateTime(item.createdAt);
         const statusBadge = getStatusBadge(item.status);
 
         return `
           <div class="incident-item" id="item-${item.id}">
-            <!-- 썸네일 -->
             <div class="incident-thumb" onclick="${item.photo ? `openLightbox('${item.photo}')` : ''}">
               ${item.photo 
                 ? `<img src="${item.photo}" alt="신고 현장 사진" title="클릭하여 원본 확대">` 
                 : `<div class="incident-thumb-empty">📷</div>`}
             </div>
 
-            <!-- 내용 본문 -->
             <div class="incident-content">
               <div>
                 <div class="incident-header">
@@ -1599,7 +1758,6 @@
                 ` : ''}
               </div>
 
-              <!-- 하단 상태 변경 및 관리 바 -->
               <div class="incident-footer">
                 <div class="incident-meta">
                   <span>👤 신고자: <strong>${escapeHtml(item.reporter || '복지관 직원')}</strong></span>
@@ -1631,14 +1789,10 @@
 
     function getStatusBadge(status) {
       switch (status) {
-        case 'pending':
-          return `<span class="badge badge-pending">⏳ 접수 (조치대기)</span>`;
-        case 'in_progress':
-          return `<span class="badge badge-in_progress">🔧 조치 진행중</span>`;
-        case 'completed':
-          return `<span class="badge badge-completed">✅ 조치 완료</span>`;
-        default:
-          return '';
+        case 'pending': return `<span class="badge badge-pending">⏳ 접수 (조치대기)</span>`;
+        case 'in_progress': return `<span class="badge badge-in_progress">🔧 조치 진행중</span>`;
+        case 'completed': return `<span class="badge badge-completed">✅ 조치 완료</span>`;
+        default: return '';
       }
     }
 
@@ -1654,29 +1808,61 @@
       renderDashboard();
     }
 
-    function quickUpdateStatus(id, newStatus) {
+    // Quick Status Update
+    async function quickUpdateStatus(id, newStatus) {
       const item = incidents.find(i => i.id === id);
       if (!item) return;
+
+      const prevStatus = item.status;
+      const prevDate = item.actionDate;
 
       item.status = newStatus;
       if (newStatus === 'completed' && !item.actionDate) {
         item.actionDate = new Date().toISOString();
       }
-      saveIncidents();
+
+      if (isSupabaseConnected && supabaseClient) {
+        const { error } = await supabaseClient
+          .from('incidents')
+          .update({
+            status: item.status,
+            action_date: item.actionDate
+          })
+          .eq('id', id);
+
+        if (error) {
+          alert('수파베이스 업데이트 실패: ' + error.message);
+          item.status = prevStatus;
+          item.actionDate = prevDate;
+        }
+      }
+
+      localStorage.setItem(LOCAL_DATA_KEY, JSON.stringify(incidents));
       renderDashboard();
     }
 
-    function deleteIncident(id) {
-      if (confirm('이 신문고 접수 내역을 삭제하시겠습니까?')) {
-        incidents = incidents.filter(i => i.id !== id);
-        saveIncidents();
-        renderDashboard();
+    // Delete Incident
+    async function deleteIncident(id) {
+      if (!confirm('이 신문고 접수 내역을 삭제하시겠습니까?')) return;
+
+      if (isSupabaseConnected && supabaseClient) {
+        const { error } = await supabaseClient
+          .from('incidents')
+          .delete()
+          .eq('id', id);
+
+        if (error) {
+          alert('수파베이스 삭제 실패: ' + error.message);
+          return;
+        }
       }
+
+      incidents = incidents.filter(i => i.id !== id);
+      localStorage.setItem(LOCAL_DATA_KEY, JSON.stringify(incidents));
+      renderDashboard();
     }
 
-    // ==========================================
-    // Action Modal Handlers
-    // ==========================================
+    // Action Modal
     function openActionModal(id) {
       const item = incidents.find(i => i.id === id);
       if (!item) return;
@@ -1693,7 +1879,7 @@
       document.getElementById('action-modal').classList.remove('open');
     }
 
-    function saveActionDetail() {
+    async function saveActionDetail() {
       const id = document.getElementById('action-incident-id').value;
       const status = document.getElementById('action-status-select').value;
       const note = document.getElementById('action-note-input').value.trim();
@@ -1707,13 +1893,123 @@
         item.actionDate = new Date().toISOString();
       }
 
-      saveIncidents();
+      if (isSupabaseConnected && supabaseClient) {
+        const { error } = await supabaseClient
+          .from('incidents')
+          .update({
+            status: item.status,
+            action_note: item.actionNote,
+            action_date: item.actionDate
+          })
+          .eq('id', id);
+
+        if (error) {
+          alert('수파베이스 저장 실패: ' + error.message);
+          return;
+        }
+      }
+
+      localStorage.setItem(LOCAL_DATA_KEY, JSON.stringify(incidents));
       closeActionModal();
       renderDashboard();
     }
 
     // ==========================================
-    // Lightbox Modal
+    // 6. SUPABASE CONFIG MODAL
+    // ==========================================
+    function openConfigModal() {
+      const storedCfg = localStorage.getItem(CFG_STORAGE_KEY);
+      const cfg = storedCfg ? JSON.parse(storedCfg) : DEFAULT_CONFIG;
+
+      document.getElementById('cfg-supabase-url').value = cfg.url || '';
+      document.getElementById('cfg-supabase-key').value = cfg.anonKey || '';
+      document.getElementById('config-modal').classList.add('open');
+    }
+
+    function closeConfigModal() {
+      document.getElementById('config-modal').classList.remove('open');
+    }
+
+    async function saveSupabaseConfig() {
+      const url = document.getElementById('cfg-supabase-url').value.trim();
+      const anonKey = document.getElementById('cfg-supabase-key').value.trim();
+
+      if (!url || !anonKey) {
+        alert('URL과 Anon Key를 모두 입력해주세요.');
+        return;
+      }
+
+      try {
+        const testClient = window.supabase.createClient(url, anonKey);
+        const { data, error } = await testClient.from('incidents').select('id').limit(1);
+
+        if (error) throw error;
+
+        // Save
+        const cfg = { url, anonKey };
+        localStorage.setItem(CFG_STORAGE_KEY, JSON.stringify(cfg));
+        supabaseClient = testClient;
+        isSupabaseConnected = true;
+
+        updateDbStatusUI(true);
+        setupRealtimeSubscription();
+        closeConfigModal();
+        await refreshData();
+
+        alert('🎉 수파베이스 연결에 성공했습니다!\n모든 데이터가 실시간으로 동기화됩니다.');
+      } catch (err) {
+        alert('연결 테스트 실패: ' + err.message + '\n\n테이블이 없거나 URL/Key가 정확한지 확인해주세요.');
+      }
+    }
+
+    function resetToLocalMode() {
+      if (confirm('수파베이스 연동을 해제하고 브라우저 로컬 저장소 모드로 전환하시겠습니까?')) {
+        localStorage.removeItem(CFG_STORAGE_KEY);
+        isSupabaseConnected = false;
+        supabaseClient = null;
+        if (realtimeChannel) {
+          realtimeChannel.unsubscribe();
+          realtimeChannel = null;
+        }
+        updateDbStatusUI(false);
+        closeConfigModal();
+        refreshData();
+      }
+    }
+
+    function copySqlSchema() {
+      const sql = `-- 화성시남부신문고 Supabase 테이블 스키마
+CREATE TABLE IF NOT EXISTS public.incidents (
+  id TEXT PRIMARY KEY,
+  location TEXT NOT NULL,
+  category TEXT NOT NULL,
+  description TEXT NOT NULL,
+  reporter TEXT DEFAULT '복지관 직원',
+  status TEXT DEFAULT 'pending',
+  action_note TEXT,
+  action_date TIMESTAMPTZ,
+  photo TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.incidents ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "누구나 안전신문고 조회 가능" ON public.incidents FOR SELECT USING (true);
+CREATE POLICY "누구나 안전신문고 접수 가능" ON public.incidents FOR INSERT WITH CHECK (true);
+CREATE POLICY "누구나 안전신문고 상태 변경 가능" ON public.incidents FOR UPDATE USING (true);
+CREATE POLICY "누구나 안전신문고 삭제 가능" ON public.incidents FOR DELETE USING (true);
+
+ALTER PUBLICATION supabase_realtime ADD TABLE public.incidents;`;
+
+      navigator.clipboard.writeText(sql).then(() => {
+        alert('SQL 스크립트가 클립보드에 복사되었습니다!\nSupabase의 SQL Editor에 붙여넣고 Run을 눌러주세요.');
+      }).catch(() => {
+        alert('복사 권한이 없어 수동으로 복사해주세요: 폴더 안의 supabase_schema.sql 파일을 열어보실 수 있습니다.');
+      });
+    }
+
+    // ==========================================
+    // 7. LIGHTBOX & UTILITIES
     // ==========================================
     function openLightbox(src) {
       document.getElementById('lightbox-img').src = src;
@@ -1724,9 +2020,6 @@
       document.getElementById('lightbox-modal').classList.remove('open');
     }
 
-    // ==========================================
-    // Export to CSV (Excel Friendly)
-    // ==========================================
     function exportToCSV() {
       if (incidents.length === 0) {
         alert('내보낼 데이터가 없습니다.');
@@ -1757,9 +2050,6 @@
       document.body.removeChild(link);
     }
 
-    // ==========================================
-    // Utility Functions
-    // ==========================================
     function formatDateTime(isoString) {
       if (!isoString) return '';
       const d = new Date(isoString);
