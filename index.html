@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>화성시남부신문고 - 노인복지관 간편 안전신문고</title>
+  <!-- Google Fonts: Nunito & Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* ========================================================
+       DESIGN TOKENS (from DESIGN.md - Duolingo Playful Style)
+       ======================================================== */
+    :root {
+      --color-eager-green: #58cc02;
+      --color-eager-green-hover: #46a302;
+      --color-eager-green-dark: #388402;
+      --color-storybook-green: #d7ffb8;
+      --color-spark-blue: #1cb0f6;
+      --color-spark-blue-hover: #1899d6;
+      --color-spark-blue-dark: #147dae;
+      --color-fresh-leaf: #a5ed6e;
+      --color-night-ink: #000437;
+      --color-paper-white: #ffffff;
+      --color-charcoal: #4b4b4b;
+      --color-pencil-gray: #777777;
+      --color-faded-gray: #afafaf;
+      --color-border-subtle: #e5e5e5;
+      --color-canvas-bg: #f7f9fa;
+      --color-warning-orange: #ff9600;
+      --color-warning-dark: #cc7800;
+      --color-danger-red: #ff4b4b;
+      --color-danger-dark: #ea2b2b;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-pill: 9999px;
+
+      --font-family-display: 'Nunito', 'Noto Sans KR', sans-serif;
+      --font-family-body: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font-family-body);
+      background-color: var(--color-canvas-bg);
+      color: var(--color-charcoal);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 3D Sticker Buttons & Elements (Duolingo signature) */
+    .btn-3d {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 16px;
+      padding: 14px 22px;
+      border-radius: var(--radius-lg);
+      border: 2px solid transparent;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.1s ease;
+      text-decoration: none;
+      outline: none;
+    }
+
+    .btn-3d:active {
+      transform: translateY(3px);
+    }
+
+    .btn-green {
+      background-color: var(--color-eager-green);
+      color: var(--color-paper-white);
+      border-bottom: 4px solid var(--color-eager-green-dark);
+    }
+    .btn-green:hover {
+      background-color: #52bf02;
+    }
+    .btn-green:active {
+      border-bottom-width: 1px;
+    }
+
+    .btn-blue {
+      background-color: var(--color-spark-blue);
+      color: var(--color-paper-white);
+      border-bottom: 4px solid var(--color-spark-blue-dark);
+    }
+    .btn-blue:hover {
+      background-color: #1a9ee0;
+    }
+    .btn-blue:active {
+      border-bottom-width: 1px;
+    }
+
+    .btn-white-outline {
+      background-color: var(--color-paper-white);
+      color: var(--color-pencil-gray);
+      border: 2px solid var(--color-border-subtle);
+      border-bottom: 4px solid #cecece;
+    }
+    .btn-white-outline:hover {
+      background-color: #fcfcfc;
+      color: var(--color-charcoal);
+    }
+    .btn-white-outline:active {
+      border-bottom-width: 2px;
+    }
+
+    .btn-danger-outline {
+      background-color: var(--color-paper-white);
+      color: var(--color-danger-red);
+      border: 2px solid #ffd0d0;
+      border-bottom: 4px solid #f8b4b4;
+    }
+    .btn-danger-outline:hover {
+      background-color: #fff5f5;
+    }
+
+    /* Chunky Card Style */
+    .duo-card {
+      background: var(--color-paper-white);
+      border: 2px solid var(--color-border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.04);
+      margin-bottom: 20px;
+    }
+
+    /* Badges / Chips */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.02em;
+    }
+
+    .badge-pending {
+      background-color: #fff3d6;
+      color: #b36b00;
+      border: 1.5px solid #ffe199;
+    }
+    .badge-in_progress {
+      background-color: #e0f4ff;
+      color: #0b7eb5;
+      border: 1.5px solid #b3e4ff;
+    }
+    .badge-completed {
+      background-color: #e6f9d5;
+      color: #2e7a00;
+      border: 1.5px solid #b8f08a;
+    }
+
+    /* Top Navigation Bar */
+    header.duo-header {
+      background: var(--color-paper-white);
+      border-bottom: 2px solid var(--color-border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 12px 20px;
+    }
+
+    .header-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .brand-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--color-storybook-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #b5f585;
+      font-size: 24px;
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .brand-title {
+      font-family: var(--font-family-display);
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--color-eager-green-hover);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-pencil-gray);
+    }
+
+    /* Mode Switcher Tabs */
+    .tab-nav {
+      display: flex;
+      background: #ededed;
+      padding: 4px;
+      border-radius: var(--radius-lg);
+      gap: 4px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--color-pencil-gray);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--color-paper-white);
+      color: var(--color-charcoal);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.08);
+    }
+
+    .tab-badge {
+      background: var(--color-eager-green);
+      color: white;
+      font-size: 11px;
+      padding: 1px 7px;
+      border-radius: 99px;
+      font-weight: 900;
+    }
+
+    /* Main Container */
+    main.app-container {
+      max-width: 980px;
+      width: 100%;
+      margin: 24px auto;
+      padding: 0 16px;
+      flex: 1;
+    }
+
+    /* Views */
+    .view-section {
+      display: none;
+    }
+    .view-section.active {
+      display: block;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--color-charcoal);
+      margin-bottom: 8px;
+    }
+
+    .form-sublabel {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-pencil-gray);
+      margin-top: 3px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 15px;
+      font-family: inherit;
+      border: 2px solid var(--color-border-subtle);
+      border-radius: var(--radius-md);
+      outline: none;
+      background: #fafafa;
+      color: var(--color-charcoal);
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+
+    .form-control:focus {
+      background: var(--color-paper-white);
+      border-color: var(--color-spark-blue);
+      box-shadow: 0 0 0 3px rgba(28, 176, 246, 0.15);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    /* Quick Preset Chips */
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .chip-btn {
+      border: 2px solid var(--color-border-subtle);
+      background: var(--color-paper-white);
+      color: var(--color-pencil-gray);
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.1s ease;
+    }
+
+    .chip-btn:hover {
+      border-color: var(--color-spark-blue);
+      color: var(--color-spark-blue);
+      background: #f0f9ff;
+    }
+
+    .chip-btn.selected {
+      border-color: var(--color-spark-blue);
+      background: #e0f4ff;
+      color: #0077b6;
+    }
+
+    /* Category Buttons Grid */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+    }
+
+    .category-card {
+      border: 2px solid var(--color-border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 14px 10px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--color-paper-white);
+      transition: all 0.12s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 4px solid var(--color-border-subtle);
+    }
+
+    .category-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--color-fresh-leaf);
+    }
+
+    .category-card.selected {
+      border-color: var(--color-eager-green);
+      background: var(--color-storybook-green);
+      border-bottom-color: var(--color-eager-green-dark);
+      transform: translateY(1px);
+    }
+
+    .category-icon {
+      font-size: 28px;
+    }
+
+    .category-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--color-charcoal);
+    }
+
+    /* Photo Upload Area */
+    .photo-upload-box {
+      border: 2px dashed #c0d1dc;
+      background: #f4faff;
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s ease;
+    }
+
+    .photo-upload-box:hover {
+      border-color: var(--color-spark-blue);
+      background: #ebf6ff;
+    }
+
+    .photo-preview-wrap {
+      display: none;
+      position: relative;
+      margin-top: 12px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 2px solid var(--color-border-subtle);
+      max-height: 280px;
+      background: #000;
+    }
+
+    .photo-preview-wrap img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .photo-delete-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Voice Input & Helper bar */
+    .input-actions-bar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .btn-mini {
+      border: none;
+      background: #eee;
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-pencil-gray);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-mini:hover {
+      background: #e2e2e2;
+      color: var(--color-charcoal);
+    }
+    .btn-mini.recording {
+      background: #ffe3e3;
+      color: var(--color-danger-red);
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Dashboard Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--color-paper-white);
+      border: 2px solid var(--color-border-subtle);
+      border-bottom: 4px solid #cecece;
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .stat-num {
+      font-family: var(--font-family-display);
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--color-charcoal);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-pencil-gray);
+    }
+
+    /* Filter & Search Bar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .filter-chip {
+      background: var(--color-paper-white);
+      border: 2px solid var(--color-border-subtle);
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--color-pencil-gray);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.1s;
+    }
+
+    .filter-chip.active {
+      background: var(--color-night-ink);
+      border-color: var(--color-night-ink);
+      color: var(--color-paper-white);
+    }
+
+    .search-box {
+      position: relative;
+      min-width: 220px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 12px 8px 34px;
+      border-radius: var(--radius-pill);
+      border: 2px solid var(--color-border-subtle);
+      font-size: 13px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--color-spark-blue);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-pencil-gray);
+      pointer-events: none;
+    }
+
+    /* Incident Cards / List */
+    .incidents-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .incident-item {
+      background: var(--color-paper-white);
+      border: 2px solid var(--color-border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      display: flex;
+      gap: 18px;
+      transition: border-color 0.15s;
+    }
+
+    .incident-item:hover {
+      border-color: #cbd5e1;
+    }
+
+    .incident-thumb {
+      width: 110px;
+      height: 110px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--color-border-subtle);
+      cursor: pointer;
+    }
+
+    .incident-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .incident-thumb-empty {
+      color: #94a3b8;
+      font-size: 32px;
+    }
+
+    .incident-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .incident-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .incident-id {
+      font-family: var(--font-family-display);
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--color-pencil-gray);
+    }
+
+    .incident-location {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--color-charcoal);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .incident-desc {
+      font-size: 14px;
+      color: #4b5563;
+      margin: 6px 0 10px 0;
+      line-height: 1.45;
+      background: #f8fafc;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    .incident-action-box {
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #f1f8ed;
+      border-left: 3px solid var(--color-eager-green);
+      border-radius: 4px;
+      font-size: 13px;
+      color: #276700;
+    }
+
+    .incident-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--color-border-subtle);
+    }
+
+    .incident-meta {
+      font-size: 12px;
+      color: var(--color-pencil-gray);
+      display: flex;
+      gap: 12px;
+    }
+
+    .status-select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-dropdown {
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 800;
+      border: 2px solid var(--color-border-subtle);
+      background: var(--color-paper-white);
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* Modal dialog */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 4, 55, 0.45);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      backdrop-filter: blur(2px);
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--color-paper-white);
+      border-radius: var(--radius-xl);
+      max-width: 500px;
+      width: 100%;
+      padding: 28px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+      border: 2px solid var(--color-border-subtle);
+      text-align: center;
+      animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-mascot {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: var(--color-storybook-green);
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      border: 3px solid var(--color-eager-green);
+    }
+
+    /* Image Lightbox */
+    .lightbox-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .lightbox-modal.open {
+      display: flex;
+    }
+    .lightbox-modal img {
+      max-width: 90vw;
+      max-height: 85vh;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    /* Print styles */
+    @media print {
+      header.duo-header, .tab-nav, .filter-bar, .btn-3d, .btn-mini, .status-select-wrap button, .no-print {
+        display: none !important;
+      }
+      body {
+        background: white;
+      }
+      .app-container {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+      .duo-card, .incident-item {
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+      }
+      .view-section {
+        display: block !important;
+      }
+      #view-report {
+        display: none !important;
+      }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+      .header-inner {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+      }
+      .brand-group {
+        justify-content: center;
+      }
+      .tab-nav {
+        justify-content: center;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .incident-item {
+        flex-direction: column;
+      }
+      .incident-thumb {
+        width: 100%;
+        height: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header class="duo-header">
+    <div class="header-inner">
+      <div class="brand-group" onclick="switchView('report')">
+        <div class="brand-icon-box">🔔</div>
+        <div>
+          <div class="brand-title">화성시남부신문고</div>
+          <div class="brand-subtitle">화성시남부노인복지관 스마트 시설안전</div>
+        </div>
+      </div>
+
+      <nav class="tab-nav">
+        <button id="tab-report" class="tab-btn active" onclick="switchView('report')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          간편 신고
+        </button>
+        <button id="tab-dashboard" class="tab-btn" onclick="switchView('dashboard')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          관리자 보드
+          <span id="pending-badge-count" class="tab-badge">0</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="app-container">
+
+    <!-- ==========================================
+         VIEW 1: 직원용 간편 신고 화면 (Mobile Web)
+         ========================================== -->
+    <section id="view-report" class="view-section active">
+      <div class="duo-card" style="border-top: 6px solid var(--color-eager-green);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+          <div>
+            <h1 style="font-size: 22px; font-weight: 900; color: var(--color-charcoal); display: flex; align-items: center; gap: 8px;">
+              <span>🚨</span> 위험요소 신고하기
+            </h1>
+            <p style="font-size: 14px; color: var(--color-pencil-gray); margin-top: 4px;">
+              노인복지관 내 파손, 낙상 위험, 점검 사항을 10초 만에 접수해주세요!
+            </p>
+          </div>
+          <span class="badge" style="background: #eef9e8; color: #3b8700; border: 1.5px solid #c2eb9e;">
+            ✨ 복지관 안전 지킴이
+          </span>
+        </div>
+
+        <form id="incident-form" onsubmit="handleFormSubmit(event)">
+          
+          <!-- 1. 위치 입력 -->
+          <div class="form-group">
+            <label class="form-label" for="report-location">
+              1. 어디에서 발견하셨나요? <span style="color: var(--color-danger-red);">*</span>
+            </label>
+            <input type="text" id="report-location" class="form-control" placeholder="예: 본관 2층 로비, 3층 프로그램실 앞 등" required>
+            
+            <!-- 간편 프리셋 버튼 -->
+            <div class="preset-chips">
+              <span style="font-size: 12px; font-weight: 700; color: #888; align-self: center; margin-right: 4px;">빠른 선택:</span>
+              <button type="button" class="chip-btn" onclick="setPresetLocation('본관 1층 로비 안내데스크 앞')">🏢 1층 로비</button>
+              <button type="button" class="chip-btn" onclick="setPresetLocation('지하 1층 경로식당 출입구')">🍲 경로식당</button>
+              <button type="button" class="chip-btn" onclick="setPresetLocation('2층 프로그램실 복도')">🎨 2층 프로그램실</button>
+              <button type="button" class="chip-btn" onclick="setPresetLocation('중앙 엘리베이터 승강기 앞')">🛗 엘리베이터</button>
+              <button type="button" class="chip-btn" onclick="setPresetLocation('물리치료실 및 건강증진실')">🩺 물리치료실</button>
+              <button type="button" class="chip-btn" onclick="setPresetLocation('야외 주차장 및 정문 경사로')">🚗 야외 주차장</button>
+              <button type="button" class="chip-btn" onclick="setPresetLocation('1층 남/여 화장실 내부')">🚻 화장실</button>
+            </div>
+          </div>
+
+          <!-- 2. 위험 유형 선택 -->
+          <div class="form-group">
+            <label class="form-label">
+              2. 어떤 위험인가요? (유형 선택) <span style="color: var(--color-danger-red);">*</span>
+            </label>
+            <div class="category-grid">
+              <div class="category-card selected" onclick="selectCategory('낙상/바닥 미끄럼', this)">
+                <div class="category-icon">⚠️</div>
+                <div class="category-name">낙상/미끄럼</div>
+              </div>
+              <div class="category-card" onclick="selectCategory('시설/비품 파손', this)">
+                <div class="category-icon">🔨</div>
+                <div class="category-name">시설/파손</div>
+              </div>
+              <div class="category-card" onclick="selectCategory('조명/전기 이상', this)">
+                <div class="category-icon">💡</div>
+                <div class="category-name">조명/전기</div>
+              </div>
+              <div class="category-card" onclick="selectCategory('소방/통행 장애', this)">
+                <div class="category-icon">🚪</div>
+                <div class="category-name">소방/통로장애</div>
+              </div>
+              <div class="category-card" onclick="selectCategory('위생/청결 요망', this)">
+                <div class="category-icon">🧹</div>
+                <div class="category-name">위생/청결</div>
+              </div>
+              <div class="category-card" onclick="selectCategory('기타 위험사항', this)">
+                <div class="category-icon">🔍</div>
+                <div class="category-name">기타 위험</div>
+              </div>
+            </div>
+            <input type="hidden" id="report-category" value="낙상/바닥 미끄럼">
+          </div>
+
+          <!-- 3. 현장 사진 첨부 -->
+          <div class="form-group">
+            <label class="form-label">
+              3. 현장 사진 첨부 <span style="font-weight: 500; font-size: 13px; color: var(--color-pencil-gray);">(권장)</span>
+            </label>
+            
+            <div class="photo-upload-box" onclick="document.getElementById('report-photo-input').click()">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1cb0f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 6px;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <div style="font-size: 15px; font-weight: 800; color: var(--color-spark-blue-dark);">
+                스마트폰 사진 촬영 또는 갤러리 업로드
+              </div>
+              <div style="font-size: 12px; color: #8292a0; margin-top: 2px;">
+                사진을 등록하면 시설관리사가 더 빠르고 정확하게 조치할 수 있어요.
+              </div>
+              <input type="file" id="report-photo-input" accept="image/*" capture="environment" style="display: none;" onchange="handlePhotoUpload(event)">
+            </div>
+
+            <!-- 사진 미리보기 컨테이너 -->
+            <div id="photo-preview-wrap" class="photo-preview-wrap">
+              <img id="photo-preview-img" src="" alt="현장 사진 미리보기">
+              <button type="button" class="photo-delete-btn" onclick="clearPhoto(event)" title="사진 삭제">✕</button>
+            </div>
+          </div>
+
+          <!-- 4. 상세 내용 서술 -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <label class="form-label" for="report-desc">
+                4. 위험 내용 간략 서술 <span style="color: var(--color-danger-red);">*</span>
+              </label>
+              <div class="input-actions-bar">
+                <button type="button" id="voice-btn" class="btn-mini" onclick="toggleSpeechRecognition()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                  <span>음성 입력</span>
+                </button>
+              </div>
+            </div>
+            <textarea id="report-desc" class="form-control" rows="3" placeholder="예: 바닥 매트가 들떠서 어르신들이 지나가다 넘어질 위험이 있어요. 확인 부탁드립니다." required></textarea>
+          </div>
+
+          <!-- 5. 신고자 (선택) -->
+          <div class="form-group">
+            <label class="form-label" for="report-reporter">
+              5. 신고자 성함/부서 <span style="font-weight: 500; font-size: 13px; color: var(--color-pencil-gray);">(선택사항)</span>
+            </label>
+            <input type="text" id="report-reporter" class="form-control" placeholder="예: 복지사업팀 김사회복지사 (미입력 시 '복지관 직원')">
+          </div>
+
+          <!-- 제출 버튼 (Duolingo 3D 볼록 버튼) -->
+          <div style="margin-top: 28px;">
+            <button type="submit" class="btn-3d btn-green" style="width: 100%; font-size: 18px; padding: 16px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              화성시남부신문고에 제출하기
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- 신문고 이용 안내 카드 -->
+      <div class="duo-card" style="background: #fafcfe; border-color: #dbeafe; padding: 18px 22px;">
+        <h3 style="font-size: 15px; font-weight: 800; color: #1e3a8a; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+          <span>💡</span> 신문고 접수 후 어떻게 처리되나요?
+        </h3>
+        <ul style="font-size: 13px; color: #475569; padding-left: 20px; line-height: 1.6;">
+          <li>제출 즉시 <strong>시설관리팀 관리자 보드</strong>로 전달되어 긴급도에 따라 순차 조치됩니다.</li>
+          <li>조치 상태는 <span style="color:#b36b00; font-weight:700;">접수</span> ➔ <span style="color:#0b7eb5; font-weight:700;">조치중</span> ➔ <span style="color:#2e7a00; font-weight:700;">조치완료</span> 로 업데이트됩니다.</li>
+          <li>긴급 누수, 화재, 비상 상황은 즉시 시설관리실(구내 104)로 유선 연락 바랍니다.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VIEW 2: 시설관리사용 관리 대시보드 (Dashboard)
+         ========================================== -->
+    <section id="view-dashboard" class="view-section">
+      
+      <!-- 상단 헤더 & 컨트롤 -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <h1 style="font-size: 22px; font-weight: 900; color: var(--color-charcoal); display: flex; align-items: center; gap: 8px;">
+            <span>📋</span> 시설관리 현황 대시보드
+          </h1>
+          <p style="font-size: 14px; color: var(--color-pencil-gray); margin-top: 2px;">
+            접수된 안전 위험 요소를 확인하고 조치 상태를 실시간으로 관리합니다.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 8px;" class="no-print">
+          <button class="btn-3d btn-white-outline" style="padding: 8px 14px; font-size: 13px;" onclick="exportToCSV()" title="엑셀 CSV 다운로드">
+            📥 엑셀(CSV) 저장
+          </button>
+          <button class="btn-3d btn-white-outline" style="padding: 8px 14px; font-size: 13px;" onclick="window.print()" title="안전 점검일지 인쇄">
+            🖨️ 점검표 인쇄
+          </button>
+          <button class="btn-3d btn-white-outline" style="padding: 8px 14px; font-size: 13px;" onclick="resetToSampleData()" title="기본 샘플 복구">
+            🔄 샘플 복구
+          </button>
+        </div>
+      </div>
+
+      <!-- 통계 카드 그리드 (Duolingo Style) -->
+      <div class="stats-grid">
+        <div class="stat-card" style="border-bottom-color: #cbd5e1;">
+          <div class="stat-icon" style="background: #f1f5f9; color: #475569;">📊</div>
+          <div>
+            <div id="stat-total" class="stat-num">0</div>
+            <div class="stat-label">총 접수 건수</div>
+          </div>
+        </div>
+
+        <div class="stat-card" style="border-bottom-color: #ffd277;">
+          <div class="stat-icon" style="background: #fff4d9; color: #b36b00;">⏳</div>
+          <div>
+            <div id="stat-pending" class="stat-num" style="color: #b36b00;">0</div>
+            <div class="stat-label">조치 대기</div>
+          </div>
+        </div>
+
+        <div class="stat-card" style="border-bottom-color: #77c5f8;">
+          <div class="stat-icon" style="background: #e0f4ff; color: #0b7eb5;">🔧</div>
+          <div>
+            <div id="stat-in-progress" class="stat-num" style="color: #0b7eb5;">0</div>
+            <div class="stat-label">조치 진행 중</div>
+          </div>
+        </div>
+
+        <div class="stat-card" style="border-bottom-color: #8fe859;">
+          <div class="stat-icon" style="background: #e6f9d5; color: #2e7a00;">✅</div>
+          <div>
+            <div id="stat-completed" class="stat-num" style="color: #2e7a00;">0</div>
+            <div class="stat-label">조치 완료</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 검색 & 필터링 바 -->
+      <div class="filter-bar no-print">
+        <div class="filter-group">
+          <button class="filter-chip active" onclick="setFilter('all', this)">전체보기 (<span id="filter-count-all">0</span>)</button>
+          <button class="filter-chip" onclick="setFilter('pending', this)">조치대기 (<span id="filter-count-pending">0</span>)</button>
+          <button class="filter-chip" onclick="setFilter('in_progress', this)">조치중 (<span id="filter-count-in-progress">0</span>)</button>
+          <button class="filter-chip" onclick="setFilter('completed', this)">조치완료 (<span id="filter-count-completed">0</span>)</button>
+        </div>
+
+        <div class="search-box">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="search-input" class="search-input" placeholder="위치, 내용, 신고자 검색..." oninput="handleSearch(this.value)">
+        </div>
+      </div>
+
+      <!-- 접수 내역 리스트 -->
+      <div id="incidents-container" class="incidents-list">
+        <!-- JS로 동적 생성됨 -->
+      </div>
+
+      <!-- 리스트 비었을 때 화면 -->
+      <div id="empty-state" class="duo-card" style="display: none; text-align: center; padding: 48px 20px;">
+        <div style="font-size: 56px; margin-bottom: 12px;">🌿</div>
+        <h3 style="font-size: 18px; font-weight: 800; color: var(--color-charcoal); margin-bottom: 6px;">
+          해당 조건의 신고 내역이 없습니다.
+        </h3>
+        <p style="font-size: 14px; color: var(--color-pencil-gray);">
+          화성시남부노인복지관이 안전하게 잘 관리되고 있습니다!
+        </p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       MODAL 1: 접수 완료 안내 팝업
+       ========================================== -->
+  <div id="success-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-mascot">🎉</div>
+      <h2 style="font-size: 22px; font-weight: 900; color: var(--color-charcoal); margin-bottom: 8px;">
+        안전신문고 접수 완료!
+      </h2>
+      <p style="font-size: 14px; color: var(--color-pencil-gray); margin-bottom: 16px;">
+        복지관 어르신들과 동료 직원들의 안전을 위한<br>소중한 신고 감사합니다.
+      </p>
+
+      <div style="background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: var(--radius-md); padding: 12px; margin-bottom: 20px;">
+        <div style="font-size: 12px; color: #64748b; font-weight: 700;">접수 등록 번호</div>
+        <div id="modal-incident-id" style="font-family: var(--font-family-display); font-size: 20px; font-weight: 900; color: var(--color-spark-blue-dark); margin-top: 2px;">
+          HS-2026-0000
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button type="button" class="btn-3d btn-green" style="flex: 1; padding: 12px;" onclick="closeModalAndGoDashboard()">
+          관리자 보드에서 확인하기
+        </button>
+        <button type="button" class="btn-3d btn-white-outline" style="flex: 1; padding: 12px;" onclick="closeModal()">
+          추가 신고하기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 2: 관리자 조치 상세 모달
+       ========================================== -->
+  <div id="action-modal" class="modal-backdrop">
+    <div class="modal-box" style="text-align: left; max-width: 540px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 2px solid #eee; padding-bottom: 12px;">
+        <h3 style="font-size: 18px; font-weight: 900; color: var(--color-charcoal); display: flex; align-items: center; gap: 6px;">
+          <span>🛠️</span> 시설 조치 내용 작성
+        </h3>
+        <button type="button" onclick="closeActionModal()" style="border: none; background: transparent; font-size: 20px; cursor: pointer; color: #999;">✕</button>
+      </div>
+
+      <input type="hidden" id="action-incident-id">
+      
+      <div style="margin-bottom: 14px;">
+        <div style="font-size: 13px; font-weight: 700; color: #777;">위치 및 신고 내용</div>
+        <div id="action-modal-summary" style="font-size: 14px; font-weight: 800; color: #222; margin-top: 2px;"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="action-status-select">조치 진행 상태</label>
+        <select id="action-status-select" class="form-control" style="font-weight: 800;">
+          <option value="pending">⏳ 접수 (조치 대기)</option>
+          <option value="in_progress">🔧 조치중 (자재 수급/수리 진행)</option>
+          <option value="completed">✅ 조치완료 (현장 확인 완료)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="action-note-input">조치 메모 및 결과 기록</label>
+        <textarea id="action-note-input" class="form-control" rows="3" placeholder="예: 미끄럼 방지 테이프 재부착 완료, 바닥 단차 경고 스티커 부착 완료 (시설관리자 홍길동)"></textarea>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;">
+        <button type="button" class="btn-3d btn-white-outline" style="padding: 10px 18px;" onclick="closeActionModal()">취소</button>
+        <button type="button" class="btn-3d btn-green" style="padding: 10px 22px;" onclick="saveActionDetail()">저장하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 3: 사진 확대 팝업 (Lightbox)
+       ========================================== -->
+  <div id="lightbox-modal" class="lightbox-modal" onclick="closeLightbox()">
+    <img id="lightbox-img" src="" alt="사진 원본 보기">
+  </div>
+
+  <!-- ==========================================
+       JAVASCRIPT LOGIC
+       ========================================== -->
+  <script>
+    // Storage Key
+    const STORAGE_KEY = 'hwaseong_south_safe_incidents_v1';
+
+    // State
+    let incidents = [];
+    let currentFilter = 'all';
+    let searchQuery = '';
+    let currentPhotoBase64 = null;
+    let speechRecognition = null;
+    let isRecordingVoice = false;
+
+    // Default Sample Data (화성시남부노인복지관 맞춤 현실적 데이터)
+    const SAMPLE_INCIDENTS = [
+      {
+        id: 'HS-2026-0929-01',
+        location: '본관 2층 프로그램실 203호 복도 앞',
+        category: '낙상/바닥 미끄럼',
+        description: '복도 바닥 미끄럼 방지 매트 모서리가 살짝 들떠 있어서 보행차를 미시는 어르신들이 걸려 넘어지실 위험이 있습니다.',
+        reporter: '평생교육팀 이복지',
+        createdAt: '2026-09-29T10:15:00',
+        status: 'pending',
+        actionNote: '',
+        actionDate: null,
+        photo: null
+      },
+      {
+        id: 'HS-2026-0929-02',
+        location: '지하 1층 경로식당 퇴식구 주변',
+        category: '낙상/바닥 미끄럼',
+        description: '식사 배식 후 식기 반납대 바닥에 물기가 고여 미끄럽습니다. 조치 및 안내 표지판 설치 부탁드립니다.',
+        reporter: '영양위생팀 박조리',
+        createdAt: '2026-09-29T13:40:00',
+        status: 'in_progress',
+        actionNote: '현장 미끄럼주의 안전표지판 2개 배치 완료, 수시 건식 걸레질 진행 중',
+        actionDate: '2026-09-29T14:00:00',
+        photo: null
+      },
+      {
+        id: 'HS-2026-0928-03',
+        location: '1층 어르신 전용 남성 화장실 세면대',
+        category: '시설/비품 파손',
+        description: '세면대 온수 수전 레버가 헐거워져 헛돌고 물이 조금씩 샙니다.',
+        reporter: '안내데스크 최직원',
+        createdAt: '2026-09-28T16:20:00',
+        status: 'completed',
+        actionNote: '수전 카트리지 및 패킹 교체 수리 완료. 정상 작동 확인.',
+        actionDate: '2026-09-29T09:30:00',
+        photo: null
+      }
+    ];
+
+    // ==========================================
+    // Lifecycle & Initialization
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      loadIncidents();
+      initSpeechRecognition();
+      renderDashboard();
+    });
+
+    function loadIncidents() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          incidents = JSON.parse(stored);
+        } catch (e) {
+          console.error('Failed to parse stored incidents', e);
+          incidents = [...SAMPLE_INCIDENTS];
+        }
+      } else {
+        incidents = [...SAMPLE_INCIDENTS];
+        saveIncidents();
+      }
+    }
+
+    function saveIncidents() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(incidents));
+      } catch (e) {
+        alert('브라우저 용량이 초과되어 저장하지 못했습니다. 불필요한 사진을 정리해주세요.');
+      }
+    }
+
+    function resetToSampleData() {
+      if (confirm('샘플 데이터 3건으로 초기화하시겠습니까? (기존 데이터가 대체됩니다)')) {
+        incidents = JSON.parse(JSON.stringify(SAMPLE_INCIDENTS));
+        saveIncidents();
+        renderDashboard();
+        alert('샘플 데이터가 복구되었습니다.');
+      }
+    }
+
+    // ==========================================
+    // View Switcher (Report vs Dashboard)
+    // ==========================================
+    function switchView(viewName) {
+      const reportView = document.getElementById('view-report');
+      const dashboardView = document.getElementById('view-dashboard');
+      const tabReport = document.getElementById('tab-report');
+      const tabDashboard = document.getElementById('tab-dashboard');
+
+      if (viewName === 'report') {
+        reportView.classList.add('active');
+        dashboardView.classList.remove('active');
+        tabReport.classList.add('active');
+        tabDashboard.classList.remove('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        reportView.classList.remove('active');
+        dashboardView.classList.add('active');
+        tabReport.classList.remove('active');
+        tabDashboard.classList.add('active');
+        renderDashboard();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    // ==========================================
+    // Report Form Handlers
+    // ==========================================
+    function setPresetLocation(loc) {
+      const input = document.getElementById('report-location');
+      input.value = loc;
+      input.focus();
+    }
+
+    function selectCategory(categoryName, element) {
+      document.querySelectorAll('.category-card').forEach(el => el.classList.remove('selected'));
+      element.classList.add('selected');
+      document.getElementById('report-category').value = categoryName;
+    }
+
+    // Image Upload & Canvas Resizing
+    function handlePhotoUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          // Resize image for optimal localStorage storage (Max width/height: 800px)
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const MAX_SIZE = 800;
+
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          currentPhotoBase64 = canvas.toDataURL('image/jpeg', 0.75);
+
+          // Update Preview
+          document.getElementById('photo-preview-img').src = currentPhotoBase64;
+          document.getElementById('photo-preview-wrap').style.display = 'block';
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearPhoto(e) {
+      if (e) e.stopPropagation();
+      currentPhotoBase64 = null;
+      document.getElementById('report-photo-input').value = '';
+      document.getElementById('photo-preview-img').src = '';
+      document.getElementById('photo-preview-wrap').style.display = 'none';
+    }
+
+    // Web Speech API
+    function initSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        speechRecognition = new SpeechRecognition();
+        speechRecognition.lang = 'ko-KR';
+        speechRecognition.interimResults = false;
+
+        speechRecognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          const descInput = document.getElementById('report-desc');
+          descInput.value = descInput.value ? `${descInput.value} ${transcript}` : transcript;
+        };
+
+        speechRecognition.onend = () => {
+          isRecordingVoice = false;
+          const btn = document.getElementById('voice-btn');
+          btn.classList.remove('recording');
+          btn.querySelector('span').textContent = '음성 입력';
+        };
+
+        speechRecognition.onerror = () => {
+          isRecordingVoice = false;
+          const btn = document.getElementById('voice-btn');
+          btn.classList.remove('recording');
+          btn.querySelector('span').textContent = '음성 입력';
+        };
+      }
+    }
+
+    function toggleSpeechRecognition() {
+      if (!speechRecognition) {
+        alert('사용하시는 브라우저에서는 음성 인식을 지원하지 않습니다. 텍스트로 직접 입력해주세요.');
+        return;
+      }
+
+      const btn = document.getElementById('voice-btn');
+      if (!isRecordingVoice) {
+        try {
+          speechRecognition.start();
+          isRecordingVoice = true;
+          btn.classList.add('recording');
+          btn.querySelector('span').textContent = '말씀하세요...';
+        } catch (e) {
+          console.error(e);
+        }
+      } else {
+        speechRecognition.stop();
+      }
+    }
+
+    // Form Submit
+    function handleFormSubmit(e) {
+      e.preventDefault();
+
+      const location = document.getElementById('report-location').value.trim();
+      const category = document.getElementById('report-category').value;
+      const desc = document.getElementById('report-desc').value.trim();
+      let reporter = document.getElementById('report-reporter').value.trim();
+      if (!reporter) reporter = '복지관 직원';
+
+      if (!location || !desc) {
+        alert('위치와 위험 내용을 모두 입력해주세요.');
+        return;
+      }
+
+      // Generate ID: HS-YYYYMMDD-XX
+      const now = new Date();
+      const datePart = now.getFullYear().toString() +
+                       String(now.getMonth() + 1).padStart(2, '0') +
+                       String(now.getDate()).padStart(2, '0');
+      const randomSeq = Math.floor(1000 + Math.random() * 9000);
+      const newId = `HS-${datePart}-${randomSeq}`;
+
+      const newIncident = {
+        id: newId,
+        location: location,
+        category: category,
+        description: desc,
+        reporter: reporter,
+        createdAt: now.toISOString(),
+        status: 'pending',
+        actionNote: '',
+        actionDate: null,
+        photo: currentPhotoBase64
+      };
+
+      // Add to front of array
+      incidents.unshift(newIncident);
+      saveIncidents();
+
+      // Reset form
+      document.getElementById('incident-form').reset();
+      clearPhoto();
+      selectCategory('낙상/바닥 미끄럼', document.querySelector('.category-card'));
+
+      // Show Success Modal
+      document.getElementById('modal-incident-id').textContent = newId;
+      document.getElementById('success-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('success-modal').classList.remove('open');
+    }
+
+    function closeModalAndGoDashboard() {
+      closeModal();
+      switchView('dashboard');
+    }
+
+    // ==========================================
+    // Dashboard Rendering & Actions
+    // ==========================================
+    function renderDashboard() {
+      // Calculate Counts
+      const totalCount = incidents.length;
+      const pendingCount = incidents.filter(i => i.status === 'pending').length;
+      const inProgressCount = incidents.filter(i => i.status === 'in_progress').length;
+      const completedCount = incidents.filter(i => i.status === 'completed').length;
+
+      // Update Header Badge & Stat Cards
+      document.getElementById('pending-badge-count').textContent = pendingCount;
+      document.getElementById('stat-total').textContent = totalCount;
+      document.getElementById('stat-pending').textContent = pendingCount;
+      document.getElementById('stat-in-progress').textContent = inProgressCount;
+      document.getElementById('stat-completed').textContent = completedCount;
+
+      // Update Filter counts
+      document.getElementById('filter-count-all').textContent = totalCount;
+      document.getElementById('filter-count-pending').textContent = pendingCount;
+      document.getElementById('filter-count-in-progress').textContent = inProgressCount;
+      document.getElementById('filter-count-completed').textContent = completedCount;
+
+      // Filter list
+      let filtered = incidents;
+      if (currentFilter !== 'all') {
+        filtered = filtered.filter(i => i.status === currentFilter);
+      }
+
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        filtered = filtered.filter(i => 
+          i.location.toLowerCase().includes(q) ||
+          i.description.toLowerCase().includes(q) ||
+          (i.reporter && i.reporter.toLowerCase().includes(q)) ||
+          i.category.toLowerCase().includes(q) ||
+          i.id.toLowerCase().includes(q)
+        );
+      }
+
+      const container = document.getElementById('incidents-container');
+      const emptyState = document.getElementById('empty-state');
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+
+      // Render items
+      container.innerHTML = filtered.map(item => {
+        const dateFormatted = formatDateTime(item.createdAt);
+        const statusBadge = getStatusBadge(item.status);
+
+        return `
+          <div class="incident-item" id="item-${item.id}">
+            <!-- 썸네일 -->
+            <div class="incident-thumb" onclick="${item.photo ? `openLightbox('${item.photo}')` : ''}">
+              ${item.photo 
+                ? `<img src="${item.photo}" alt="신고 현장 사진" title="클릭하여 원본 확대">` 
+                : `<div class="incident-thumb-empty">📷</div>`}
+            </div>
+
+            <!-- 내용 본문 -->
+            <div class="incident-content">
+              <div>
+                <div class="incident-header">
+                  <div>
+                    <span class="incident-id">${item.id}</span>
+                    <span class="badge" style="background: #f1f5f9; color: #475569; margin-left: 6px;">${item.category}</span>
+                  </div>
+                  <div>${statusBadge}</div>
+                </div>
+
+                <div class="incident-location">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff4b4b" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  ${escapeHtml(item.location)}
+                </div>
+
+                <div class="incident-desc">
+                  ${escapeHtml(item.description)}
+                </div>
+
+                ${item.actionNote ? `
+                  <div class="incident-action-box">
+                    <strong>[시설 조치 결과]</strong> ${escapeHtml(item.actionNote)}
+                    ${item.actionDate ? `<span style="font-size: 11px; color: #527e38; margin-left: 6px;">(${formatDateTime(item.actionDate)})</span>` : ''}
+                  </div>
+                ` : ''}
+              </div>
+
+              <!-- 하단 상태 변경 및 관리 바 -->
+              <div class="incident-footer">
+                <div class="incident-meta">
+                  <span>👤 신고자: <strong>${escapeHtml(item.reporter || '복지관 직원')}</strong></span>
+                  <span>🕒 접수일시: ${dateFormatted}</span>
+                </div>
+
+                <div class="status-select-wrap no-print">
+                  <select class="status-dropdown" onchange="quickUpdateStatus('${item.id}', this.value)">
+                    <option value="pending" ${item.status === 'pending' ? 'selected' : ''}>⏳ 접수 (대기)</option>
+                    <option value="in_progress" ${item.status === 'in_progress' ? 'selected' : ''}>🔧 조치중</option>
+                    <option value="completed" ${item.status === 'completed' ? 'selected' : ''}>✅ 조치완료</option>
+                  </select>
+
+                  <button class="btn-3d btn-white-outline" style="padding: 6px 12px; font-size: 12px;" onclick="openActionModal('${item.id}')">
+                    ✏️ 조치기록
+                  </button>
+
+                  <button class="btn-3d btn-danger-outline" style="padding: 6px 10px; font-size: 12px;" onclick="deleteIncident('${item.id}')" title="삭제">
+                    🗑️
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getStatusBadge(status) {
+      switch (status) {
+        case 'pending':
+          return `<span class="badge badge-pending">⏳ 접수 (조치대기)</span>`;
+        case 'in_progress':
+          return `<span class="badge badge-in_progress">🔧 조치 진행중</span>`;
+        case 'completed':
+          return `<span class="badge badge-completed">✅ 조치 완료</span>`;
+        default:
+          return '';
+      }
+    }
+
+    function setFilter(filterType, element) {
+      currentFilter = filterType;
+      document.querySelectorAll('.filter-chip').forEach(el => el.classList.remove('active'));
+      element.classList.add('active');
+      renderDashboard();
+    }
+
+    function handleSearch(val) {
+      searchQuery = val.trim();
+      renderDashboard();
+    }
+
+    function quickUpdateStatus(id, newStatus) {
+      const item = incidents.find(i => i.id === id);
+      if (!item) return;
+
+      item.status = newStatus;
+      if (newStatus === 'completed' && !item.actionDate) {
+        item.actionDate = new Date().toISOString();
+      }
+      saveIncidents();
+      renderDashboard();
+    }
+
+    function deleteIncident(id) {
+      if (confirm('이 신문고 접수 내역을 삭제하시겠습니까?')) {
+        incidents = incidents.filter(i => i.id !== id);
+        saveIncidents();
+        renderDashboard();
+      }
+    }
+
+    // ==========================================
+    // Action Modal Handlers
+    // ==========================================
+    function openActionModal(id) {
+      const item = incidents.find(i => i.id === id);
+      if (!item) return;
+
+      document.getElementById('action-incident-id').value = id;
+      document.getElementById('action-modal-summary').textContent = `[${item.category}] ${item.location} - "${item.description}"`;
+      document.getElementById('action-status-select').value = item.status;
+      document.getElementById('action-note-input').value = item.actionNote || '';
+
+      document.getElementById('action-modal').classList.add('open');
+    }
+
+    function closeActionModal() {
+      document.getElementById('action-modal').classList.remove('open');
+    }
+
+    function saveActionDetail() {
+      const id = document.getElementById('action-incident-id').value;
+      const status = document.getElementById('action-status-select').value;
+      const note = document.getElementById('action-note-input').value.trim();
+
+      const item = incidents.find(i => i.id === id);
+      if (!item) return;
+
+      item.status = status;
+      item.actionNote = note;
+      if (status === 'completed' && !item.actionDate) {
+        item.actionDate = new Date().toISOString();
+      }
+
+      saveIncidents();
+      closeActionModal();
+      renderDashboard();
+    }
+
+    // ==========================================
+    // Lightbox Modal
+    // ==========================================
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-modal').classList.add('open');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox-modal').classList.remove('open');
+    }
+
+    // ==========================================
+    // Export to CSV (Excel Friendly)
+    // ==========================================
+    function exportToCSV() {
+      if (incidents.length === 0) {
+        alert('내보낼 데이터가 없습니다.');
+        return;
+      }
+
+      const headers = ['접수번호', '발생위치', '위험유형', '신고내용', '신고자', '접수일시', '처리상태', '조치내용', '조치일시'];
+      const rows = incidents.map(i => [
+        `"${i.id}"`,
+        `"${(i.location || '').replace(/"/g, '""')}"`,
+        `"${(i.category || '').replace(/"/g, '""')}"`,
+        `"${(i.description || '').replace(/"/g, '""')}"`,
+        `"${(i.reporter || '').replace(/"/g, '""')}"`,
+        `"${formatDateTime(i.createdAt)}"`,
+        `"${i.status === 'pending' ? '접수' : i.status === 'in_progress' ? '조치중' : '조치완료'}"`,
+        `"${(i.actionNote || '').replace(/"/g, '""')}"`,
+        `"${i.actionDate ? formatDateTime(i.actionDate) : ''}"`
+      ]);
+
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `화성시남부신문고_점검대장_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // ==========================================
+    // Utility Functions
+    // ==========================================
+    function formatDateTime(isoString) {
+      if (!isoString) return '';
+      const d = new Date(isoString);
+      const pad = (n) => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.toString().replace(/[&<>"']/g, m => map[m]);
+    }
+  </script>
+</body>
+</html>
